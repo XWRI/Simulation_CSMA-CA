@@ -10,6 +10,18 @@ ACK_TRANS_TIME = (64 * 8) / WIRELESS_CHANNEL_CAP # 10^-5 sec
 TIMEOUT = 20000 # 10^-5 sec
 
 
+# This object contains the relevant information of a frame
+#   @param:
+#   time: the scheduled time of transmission
+#   trans_time: the transmission time
+#   sender: the sender host of the frame
+#   receiver: the receiver host of the frame
+#   backoff: the random backoff value, initialized to be zero
+#   num_collision: the number of collisions that affects the backoff value,
+#                  initialized to be zero
+#   type: whether the frame is to be sent by a host, or received by a host
+#   ack: whether it is an acknowledgement packet
+#   id: the unique id of the frame
 class Frame(object):
     def __init__(self, time, trans_time, sender, receiver, type, ack, id):
         self.time = time
@@ -24,10 +36,16 @@ class Frame(object):
     def __lt__(self, other):
         return self.time < other.time
 
+
+# This object contains the relevant information of a frame
+#   @param:
+#   id: the id of the frame that is experiencing transmission delay
+#   start: the starting time of the tranmission delay
 class Delay(object):
     def __init__(self, id, start):
         self.id = id
         self.start = start
+
 
 def exp_backoff(num_collision):
     bkoff = int(random.random() * CONTENTION_WINDOW)
@@ -167,12 +185,12 @@ def simulation():
                             # Update the frame scheduled transmission time to the
                             # actual transmission time
                             wait_for_ack_list.append(Frame(i,
-                                                   backed_off_list[frame_to_be_sent].trans_time,
-                                                   backed_off_list[frame_to_be_sent].sender,
-                                                   backed_off_list[frame_to_be_sent].receiver,
-                                                   'S',
-                                                   False,
-                                                   backed_off_list[frame_to_be_sent].id))
+                                                           backed_off_list[frame_to_be_sent].trans_time,
+                                                           backed_off_list[frame_to_be_sent].sender,
+                                                           backed_off_list[frame_to_be_sent].receiver,
+                                                           'S',
+                                                           False,
+                                                           backed_off_list[frame_to_be_sent].id))
                             frame_list.put(Frame(receive_time,
                                                  backed_off_list[frame_to_be_sent].trans_time,
                                                  backed_off_list[frame_to_be_sent].sender,
