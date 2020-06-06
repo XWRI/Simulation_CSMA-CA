@@ -1,4 +1,4 @@
-from p1 import *
+from p1 import generate_event
 from queue import PriorityQueue
 import random
 
@@ -25,8 +25,8 @@ class Frame(object):
         return self.time < other.time
 
 def exp_backoff(num_collision):
-    bkoff = int(random.random() * 100
-    exponential = int(random.random() * pow(2, num_collision)
+    bkoff = int(random.random() * 100)
+    exponential = int(random.random() * pow(2, num_collision))
     backoff_val = bkoff * exponential
     return backoff_val
 
@@ -47,17 +47,17 @@ def simulation():
     sent_list = []
 
 
-    for i range(100000):
+    for i in range(10000):
 
         # Generate a new frame
         new_frame = i + generate_event(ARRIVAL_RATE)
         frame_length = generate_frame_length()
         new_frame_trans_time = (frame_length * 8) / (WIRELESS_CHANNEL_CAP * pow(10,6))
 
-        sender = int(random.random() * len(hosts))
-        receiver = int(random.random() * len(hosts))
+        sender = int(random.random() * N)
+        receiver = int(random.random() * N)
         while sender == receiver:
-            receiver = int(random.random() * len(hosts))
+            receiver = int(random.random() * N)
 
         frame_list.put(Frame(new_frame, new_frame_trans_time, sender, receiver, 'S', False, i))
 
@@ -88,7 +88,7 @@ def simulation():
                     backed_off_list.append(cur_frame)
 
                 # If the channel is idle
-                elif channel_idle == True:
+                if channel_idle == True:
                     receive_time = DIFS + cur_frame.trans_time + i
                     sent_list.append(cur_frame)
                     frame_list.put(Frame(receive_time,
@@ -96,7 +96,7 @@ def simulation():
                                          cur_frame.sender,
                                          cur_frame.receiver,
                                          'R',
-                                         False
+                                         False,
                                          cur_frame.id))
                     channel_busy = True
                     channel_idle = False
@@ -111,7 +111,7 @@ def simulation():
             # If the frame is scheduled to be sent later, we put it back to
             # the list
             else:
-                frame_list.put(cur_time)
+                frame_list.put(cur_frame)
 
                 # If previously we are decrementing the backoff value
                 if countdown == True:
@@ -166,7 +166,7 @@ def simulation():
                                      ACK_TRANS_TIME,
                                      cur_frame.sender,
                                      cur_frame.receiver,
-                                     R',
+                                     'R',
                                      True,
                                      cur_frame.id))
 

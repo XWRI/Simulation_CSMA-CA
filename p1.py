@@ -2,6 +2,7 @@ import queue
 from queue import PriorityQueue
 from random import random
 from math import log
+import math
 
 
 class Event(object):
@@ -14,7 +15,7 @@ class Event(object):
 
 
 arriving_rate = 0.90
-MAX_BUFFER = inf
+MAX_BUFFER = math.inf
 
 def generate_event (rate):
      u = random()
