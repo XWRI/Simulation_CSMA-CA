@@ -64,7 +64,7 @@ def simulation():
     trans_delays = []
 
 
-    for i in range(100000):  #10^-5 sec
+    for i in range(100000):  #10^-5 sec in unit, so here 100000 10^-5 sec = 1 sec
 
         # Generate a new frame
         queue_time = generate_event(ARRIVAL_RATE)
@@ -216,12 +216,11 @@ def simulation():
                 wait_for_ack_list.pop(j)
 
 
-    print(len(sent_list))
     total_bytes_trans = 0
     for frame in sent_list:
         total_bytes_trans += frame.trans_time * WIRELESS_CHANNEL_CAP / 8
     print("throughput: ")
-    print(total_bytes_trans)
+    print(total_bytes_trans)   #10^-5 sec in unit, so here 100000 10^-5 sec = 1 sec
 
     print("Average network delay: ")
     total_delay = total_delay / pow(10, 5)
